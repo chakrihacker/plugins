@@ -56,8 +56,6 @@ public class GoogleSignInPlugin implements MethodCallHandler, FlutterPlugin, Act
   private static final String METHOD_CLEAR_AUTH_CACHE = "clearAuthCache";
   private static final String METHOD_REQUEST_SCOPES = "requestScopes";
 
-  private static String _serverAuthCodeTemp = null;
-
   private Delegate delegate;
   private MethodChannel channel;
   private ActivityPluginBinding activityPluginBinding;
@@ -261,6 +259,8 @@ public class GoogleSignInPlugin implements MethodCallHandler, FlutterPlugin, Act
     private static final String DEFAULT_SIGN_IN = "SignInOption.standard";
     private static final String DEFAULT_GAMES_SIGN_IN = "SignInOption.games";
 
+    private String _serverAuthCodeTemp = null;
+
     private final Context context;
     // Only set registrar for v1 embedder.
     private PluginRegistry.Registrar registrar;
@@ -397,7 +397,6 @@ public class GoogleSignInPlugin implements MethodCallHandler, FlutterPlugin, Act
      */
     @Override
     public void signOut(Result result) {
-      _serverAuthCodeTemp = null;
       checkAndSetPendingOperation(METHOD_SIGN_OUT, result);
 
       signInClient
