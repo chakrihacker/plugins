@@ -259,6 +259,8 @@ public class GoogleSignInPlugin implements MethodCallHandler, FlutterPlugin, Act
     private static final String DEFAULT_SIGN_IN = "SignInOption.standard";
     private static final String DEFAULT_GAMES_SIGN_IN = "SignInOption.games";
 
+    private String _serverAuthCodeTemp = null;
+
     private final Context context;
     // Only set registrar for v1 embedder.
     private PluginRegistry.Registrar registrar;
@@ -481,11 +483,12 @@ public class GoogleSignInPlugin implements MethodCallHandler, FlutterPlugin, Act
     }
 
     private void onSignInAccount(GoogleSignInAccount account) {
+      _serverAuthCodeTemp = account.getServerAuthCode();
       Map<String, Object> response = new HashMap<>();
       response.put("email", account.getEmail());
       response.put("id", account.getId());
       response.put("idToken", account.getIdToken());
-      response.put("serverAuthCode", account.getServerAuthCode());
+      response.put("serverAuthCode", _serverAuthCodeTemp);
       response.put("displayName", account.getDisplayName());
       if (account.getPhotoUrl() != null) {
         response.put("photoUrl", account.getPhotoUrl().toString());
@@ -593,6 +596,7 @@ public class GoogleSignInPlugin implements MethodCallHandler, FlutterPlugin, Act
                 String token = tokenFuture.get();
                 HashMap<String, String> tokenResult = new HashMap<>();
                 tokenResult.put("accessToken", token);
+                tokenResult.put("serverAuthCode", _serverAuthCodeTemp);
                 result.success(tokenResult);
               } catch (ExecutionException e) {
                 if (e.getCause() instanceof UserRecoverableAuthException) {
